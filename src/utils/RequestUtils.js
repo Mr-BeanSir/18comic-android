@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseUrl = 'https://18comic-now.org';
+const baseUrl = 'https://18comic-now.net';
 
 const requestUtils = axios.create({
   baseURL: baseUrl,

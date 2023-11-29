@@ -5,6 +5,7 @@ import {baseUrl, easyRequest} from '../../utils/RequestUtils';
 import LoginBridge from '../../Bridge/LoginBridge';
 import apis from '../../Apis/Apis';
 import storageUtils from '../../utils/StorageUtils';
+import InfoStore from '../../Store/InfoStore';
 
 const Login = props => {
   const [tipsWidth, setTipsWidth] = useState(200);
@@ -32,6 +33,9 @@ const Login = props => {
           ToastAndroid.SHORT,
         );
         let testLoginData = await testLogin(ck);
+        if (!testLoginData) {
+          ToastAndroid.show('失败登录，请检查网络是否正常', ToastAndroid.SHORT);
+        }
         if (testLoginData.data.includes('Profile')) {
           ToastAndroid.show('登录成功，获取用户信息', ToastAndroid.SHORT);
           storageUtils.save({
@@ -42,6 +46,7 @@ const Login = props => {
             key: 'ck',
             data: ck,
           });
+          InfoStore.setLogin(true);
           props.navigation.replace('Home');
         } else {
           ToastAndroid.show('登录失败，请检查用户名密码', ToastAndroid.SHORT);

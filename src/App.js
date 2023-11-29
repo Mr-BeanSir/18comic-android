@@ -1,24 +1,28 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {useState} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import Home from './Page/Home/Home';
 import Login from './Page/Login/Login';
-import storageUtils from './utils/StorageUtils';
 import NativeRNBootSplash from 'react-native-bootsplash/src/NativeRNBootSplash';
+import InfoStore from './Store/InfoStore';
+import {observer} from 'mobx-react/src';
+import storageUtils from './utils/StorageUtils';
 
-const App = () => {
+const App = observer(() => {
   const Stack = createNativeStackNavigator();
-  const [isLogin, setIsLogin] = useState(false);
 
   return (
     <NavigationContainer
       onReady={() => {
+        if (InfoStore.login) {
+          NativeRNBootSplash.hide(true);
+          return;
+        }
         storageUtils
           .load({
             key: 'islogin',
           })
           .then(data => {
-            setIsLogin(data);
+            InfoStore.setLogin(data);
           })
           .catch(e => {
             console.log(e);
@@ -28,7 +32,7 @@ const App = () => {
           });
       }}>
       <Stack.Navigator>
-        {isLogin ? (
+        {InfoStore.login ? (
           <Stack.Screen
             name="Home"
             component={Home}
@@ -46,6 +50,6 @@ const App = () => {
       </Stack.Navigator>
     </NavigationContainer>
   );
-};
+});
 
 export default App;
