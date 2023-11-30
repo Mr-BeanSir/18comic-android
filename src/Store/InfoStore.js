@@ -7,10 +7,16 @@ class InfoStore {
 
   @observable login = false;
   @observable activeType = 1;
+  @observable cookie = '';
 
   @action
   setLogin(bool) {
     this.login = bool;
+  }
+
+  @action
+  setCookie(cookie) {
+    this.cookie = cookie;
   }
 
   @action

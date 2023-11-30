@@ -8,4 +8,12 @@ const storageUtils = new Storage({
   enableCache: true,
 });
 
-export default storageUtils;
+const getStorage = async key => {
+  try {
+    return await storageUtils.get(key);
+  } catch (err) {
+    return null;
+  }
+};
+
+export {storageUtils, getStorage};

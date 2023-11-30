@@ -7,6 +7,10 @@ const Apis = {
     method: 'GET',
     url: '/user',
   },
+  lastComic: {
+    method: 'GET',
+    url: '/albums?o=mr',
+  },
 };
 
 export default Apis;
