@@ -10,7 +10,7 @@ const storageUtils = new Storage({
 
 const getStorage = async key => {
   try {
-    return await storageUtils.get(key);
+    return await storageUtils.load({key: key});
   } catch (err) {
     return null;
   }

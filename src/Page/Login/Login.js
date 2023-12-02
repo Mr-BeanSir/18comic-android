@@ -1,11 +1,10 @@
 import React, {useState} from 'react';
 import {StyleSheet, Text, TextInput, ToastAndroid, View} from 'react-native';
 import {Button} from '@rneui/base';
-import {baseUrl, easyRequest} from '../../utils/RequestUtils';
+import {baseUrl} from '../../utils/RequestUtils';
 import LoginBridge from '../../Bridge/LoginBridge';
-import apis from '../../Apis/Apis';
-import storageUtils from '../../utils/StorageUtils';
 import InfoStore from '../../Store/InfoStore';
+import {storageUtils} from '../../utils/StorageUtils';
 
 const Login = props => {
   const [tipsWidth, setTipsWidth] = useState(200);
@@ -32,11 +31,7 @@ const Login = props => {
           '登录提交成功，检验cookie是否正常',
           ToastAndroid.SHORT,
         );
-        let testLoginData = await testLogin(ck);
-        if (!testLoginData) {
-          ToastAndroid.show('失败登录，请检查网络是否正常', ToastAndroid.SHORT);
-        }
-        if (testLoginData.data.includes('Profile')) {
+        LoginBridge.testLogin(baseUrl + '/user', ck).then(() => {
           ToastAndroid.show('登录成功，获取用户信息', ToastAndroid.SHORT);
           storageUtils.save({
             key: 'islogin',
@@ -47,31 +42,12 @@ const Login = props => {
             data: ck,
           });
           InfoStore.setLogin(true);
+          InfoStore.setCookie(ck);
           props.navigation.replace('Home');
-        } else {
-          ToastAndroid.show('登录失败，请检查用户名密码', ToastAndroid.SHORT);
-        }
+        });
       })
       .catch(e => console.log(e))
       .finally(() => setIsLogin(false));
-  };
-
-  const testLogin = ck => {
-    return new Promise((resolve, reject) => {
-      easyRequest(
-        apis.testLoginOk,
-        {},
-        {
-          headers: {
-            Cookie: ck,
-          },
-        },
-      )
-        .then(res => {
-          resolve(res);
-        })
-        .catch(err => resolve(false));
-    });
   };
 
   return (

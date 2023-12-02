@@ -1,8 +1,7 @@
 package com.comic;
 
 import android.app.Application;
-import com.comic.function.login.LoginFunction;
-import com.comic.function.login.LoginPackage;
+import com.comic.function.BridgePackage;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
@@ -27,7 +26,7 @@ public class MainApplication extends Application implements ReactApplication {
           List<ReactPackage> packages = new PackageList(this).getPackages();
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());
-            packages.add(new LoginPackage());
+            packages.add(new BridgePackage());
           return packages;
         }
 

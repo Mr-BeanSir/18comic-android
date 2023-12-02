@@ -6,34 +6,32 @@ import InfoStore from './Store/InfoStore';
 import {observer} from 'mobx-react/src';
 import Album from './Page/Album/Album';
 import {useEffect} from 'react';
+import {ToastAndroid} from 'react-native';
+import {getStorage} from './utils/StorageUtils';
 import NativeRNBootSplash from 'react-native-bootsplash/src/NativeRNBootSplash';
-import {getStorage, storageUtils} from './utils/StorageUtils';
 
 const App = observer(() => {
   const Stack = createNativeStackNavigator();
   useEffect(() => {
-    console.log('show');
-    if (InfoStore.login) {
-      console.log('this');
-      NativeRNBootSplash.hide(true);
-      return;
-    }
-    storageUtils
-      .load({
-        key: 'islogin',
-      })
-      .then(data => {
-        InfoStore.setLogin(data);
-        InfoStore.setCookie(getStorage('ck'));
-        NativeRNBootSplash.hide(true);
-      })
-      .catch(e => {
-        NativeRNBootSplash.hide(true);
-        console.log(e);
-      });
+    ToastAndroid.show('show', ToastAndroid.SHORT);
+    const init = async () => {
+      if (InfoStore.login) {
+        return;
+      }
+      let islogin = await getStorage('islogin');
+      if (islogin !== null) {
+        let ck = await getStorage('ck');
+        InfoStore.setLogin(islogin);
+        InfoStore.setCookie(ck);
+      }
+    };
+    init().finally(async () => {
+      await NativeRNBootSplash.hide(true);
+      console.log('splash hide');
+    });
   }, []);
   return (
-    <NavigationContainer>
+    <NavigationContainer onReady={() => {}}>
       <Stack.Navigator>
         {InfoStore.login ? (
           <>

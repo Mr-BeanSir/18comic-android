@@ -10,15 +10,16 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import {easyRequest} from '../../../utils/RequestUtils';
-import apis from '../../../Apis/Apis';
-import InfoStore from '../../../Store/InfoStore';
 import IDomParser from 'advanced-html-parser';
 import FastImage from 'react-native-fast-image';
 import OIcon from 'react-native-vector-icons/Octicons';
 import ListStore from '../../../Store/ListStore';
 import Loading from '../../../Componet/Loading';
 import {useNavigation} from '@react-navigation/native';
+import HomeBridge from '../../../Bridge/HomeBridge';
+import {baseUrl} from '../../../utils/RequestUtils';
+import apis from '../../../Apis/Apis';
+import InfoStore from '../../../Store/InfoStore';
 
 const _WIDTH = Dimensions.get('window').width;
 
@@ -27,14 +28,9 @@ const LastList = () => {
   useEffect(() => {
     const getComicList = async () => {
       try {
-        let data = await easyRequest(
-          apis.lastComic,
-          {},
-          {
-            headers: {
-              cookie: InfoStore.cookie,
-            },
-          },
+        let data = await HomeBridge.getPageSource(
+          baseUrl + apis.lastComic.url,
+          InfoStore.cookie,
         );
         const comicListData = [];
         if (data.data.includes('最新 Comics')) {
