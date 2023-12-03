@@ -33,8 +33,8 @@ const LastList = () => {
           InfoStore.cookie,
         );
         const comicListData = [];
-        if (data.data.includes('最新 Comics')) {
-          let doc = IDomParser.parse(data.data);
+        if (data.includes('最新 Comics')) {
+          let doc = IDomParser.parse(data);
           let list = doc.documentElement.querySelectorAll(
             '.p-b-15.p-l-5.p-r-5',
           );
@@ -71,6 +71,7 @@ const LastList = () => {
         }
         return comicListData;
       } catch (err) {
+        console.log(err);
         return null;
       }
     };

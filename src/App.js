@@ -9,6 +9,9 @@ import {useEffect} from 'react';
 import {ToastAndroid} from 'react-native';
 import {getStorage} from './utils/StorageUtils';
 import NativeRNBootSplash from 'react-native-bootsplash/src/NativeRNBootSplash';
+import loginBridge from './Bridge/LoginBridge';
+import {baseUrl} from './utils/RequestUtils';
+import Photo from './Page/Photo/Photo';
 
 const App = observer(() => {
   const Stack = createNativeStackNavigator();
@@ -21,11 +24,20 @@ const App = observer(() => {
       let islogin = await getStorage('islogin');
       if (islogin !== null) {
         let ck = await getStorage('ck');
-        InfoStore.setLogin(islogin);
-        InfoStore.setCookie(ck);
+        try {
+          let 验证登录 = await loginBridge.testLogin(baseUrl + '/user', ck);
+          if (验证登录 === 'success') {
+            InfoStore.setLogin(islogin);
+            InfoStore.setCookie(ck);
+            return;
+          }
+        } catch (error) {}
+        InfoStore.setCookie(null);
+        InfoStore.setLogin(false);
       }
     };
     init().finally(async () => {
+      ToastAndroid.show('splash hide', ToastAndroid.SHORT);
       await NativeRNBootSplash.hide(true);
       console.log('splash hide');
     });
@@ -49,6 +61,11 @@ const App = observer(() => {
                 animation: 'slide_from_right',
                 headerShown: false,
               }}
+            />
+            <Stack.Screen
+              name={'Photo'}
+              component={Photo}
+              options={{headerShown: false, animation: 'slide_from_right'}}
             />
           </>
         ) : (
